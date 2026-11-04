@@ -83,3 +83,6 @@ input[type=password] {
 .rodape { margin-top: 24px; text-align: center; }
 .selo { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: var(--destaque-claro); color: var(--destaque); }
 .selo.alerta { background: var(--alerta-claro); color: var(--alerta); }
+
+.medias { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; font-size: 0.9rem; color: var(--sutil); }
+.medias b { color: var(--texto); font-variant-numeric: tabular-nums; }

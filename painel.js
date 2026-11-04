@@ -65,6 +65,51 @@
     el.innerHTML = s + '</svg>';
   }
 
+  // Ciclo do sono: uma linha por noite, eixo de 18h às 12h do dia seguinte
+  function cicloSono(el, noites) {
+    if (!noites.length) { el.innerHTML = '<p class="vazio">Ainda sem horários de sono. A Alexa pergunta de manhã a que horas ela dormiu e acordou.</p>'; return; }
+    const W = 640; const linha = 26; const pad = { e: 46, d: 10, t: 22 };
+    const H = pad.t + noites.length * linha + 6;
+    const ini = 18 * 60; const fim = 36 * 60; // 18:00 -> 12:00
+    const pos = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); let v = h * 60 + m; if (v < ini) v += 1440; return v; };
+    const x = (v) => pad.e + (W - pad.e - pad.d) * (Math.min(Math.max(v, ini), fim) - ini) / (fim - ini);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img">`;
+    for (let h = 18; h <= 36; h += 2) {
+      const xx = x(h * 60);
+      s += `<line x1="${xx}" x2="${xx}" y1="${pad.t - 6}" y2="${H}" stroke="${css('--grade')}"/><text x="${xx}" y="12" font-size="10" text-anchor="middle" fill="${css('--sutil')}">${String(h % 24).padStart(2, '0')}h</text>`;
+    }
+    noites.forEach((n, i) => {
+      const y = pad.t + i * linha;
+      s += `<text x="${pad.e - 8}" y="${y + 14}" font-size="11" text-anchor="end" fill="${css('--sutil')}">${fmtDia(n.noite)}</text>`;
+      const tit = `${fmtDia(n.noite)}: deitou ${n.dormiu || '?'} · acordou ${n.acordou || '?'}${n.duracao ? ` · ${Math.floor(n.duracao / 60)}h${String(n.duracao % 60).padStart(2, '0')}` : ''}`;
+      if (n.dormiu && n.acordou) {
+        const a = x(pos(n.dormiu)); const b = x(pos(n.acordou));
+        const cor = n.duracao < 300 ? css('--linha2') : css('--destaque');
+        s += `<rect x="${a}" y="${y + 3}" width="${Math.max(4, b - a)}" height="${linha - 8}" rx="6" fill="${cor}"><title>${esc(tit)}</title></rect>`;
+        s += `<text x="${Math.min(b + 6, W - 40)}" y="${y + 15}" font-size="10" fill="${css('--sutil')}">${Math.floor(n.duracao / 60)}h${String(n.duracao % 60).padStart(2, '0')}</text>`;
+      } else {
+        const v = n.dormiu || n.acordou;
+        s += `<circle cx="${x(pos(v))}" cy="${y + 12}" r="5" fill="${css('--aviso')}"><title>${esc(tit)}</title></circle>`;
+      }
+    });
+    el.innerHTML = s + '</svg>';
+  }
+
+  function mediasSono(noites) {
+    const media = (vals) => (vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null);
+    const rel = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return (h * 60 + m - 720 + 1440) % 1440; }; // relativo ao meio-dia
+    const hora = (v) => { const t = Math.round(v + 720) % 1440; return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`; };
+    const d = media(noites.filter((n) => n.dormiu).map((n) => rel(n.dormiu)));
+    const a = media(noites.filter((n) => n.acordou).map((n) => rel(n.acordou)));
+    const du = media(noites.filter((n) => n.duracao).map((n) => n.duracao));
+    if (d == null && a == null) return '';
+    return [
+      d != null ? `<span>Deita em média <b>${hora(d)}</b></span>` : '',
+      a != null ? `<span>Acorda em média <b>${hora(a)}</b></span>` : '',
+      du != null ? `<span>Dorme em média <b>${Math.floor(du / 60)}h${String(Math.round(du % 60)).padStart(2, '0')}</b></span>` : '',
+    ].join('');
+  }
+
   // ---------------- montagem ----------------
   function ultimosDias(n, hoje) {
     const out = []; const d = new Date(`${hoje}T12:00:00Z`);
@@ -110,6 +155,11 @@
     });
     $('mapa-humor').innerHTML = mapa;
     $('legenda-humor').innerHTML = [5, 4, 3, 2, 1].map((n) => `<span><i style="background:${cores[n]}"></i>${NOMES_HUMOR[n]}</span>`).join('') + `<span><i style="background:${css('--vazio')}"></i>Sem resposta</span>`;
+
+    // Ciclo do sono (14 noites)
+    const ciclo = (dados.ciclo || []).slice(-14);
+    $('sono-medias').innerHTML = mediasSono(ciclo);
+    cicloSono($('graf-ciclo'), ciclo);
 
     // Remédios e água (30 dias)
     const d30 = ultimosDias(30, hoje);
@@ -166,6 +216,12 @@
       sintomas: [{ quando: `${hoje} 15:20`, descricao: 'tontura ao levantar', urgente: 0 }, { quando: `${hoje} 10:02`, descricao: 'dor no peito', urgente: 1 }],
       observacoes: [{ quando: `${hoje} 15:05`, tipo: 'outro', texto: 'foi à missa, comeu pouco' }, { quando: `${hoje} 08:40`, tipo: 'esquecimento', texto: 'remédio 10:00: Magnésio' }],
       esquecidos: [{ texto: 'remédio 10:00: Magnésio', vezes: 6 }, { texto: 'remédio 16:00: Magnésio', vezes: 3 }],
+      ciclo: dias.slice(-14).map((d) => {
+        const dm = r(21 * 60 + 30, 24 * 60 + 40) % 1440; const am = r(4 * 60 + 30, 7 * 60);
+        const f = (v) => `${String(Math.floor(v / 60)).padStart(2, '0')}:${String(v % 60).padStart(2, '0')}`;
+        let dur = am - dm; if (dur <= 0) dur += 1440;
+        return Math.random() < 0.15 ? { noite: d.dia, dormiu: f(dm), acordou: null, duracao: null } : { noite: d.dia, dormiu: f(dm), acordou: f(am), duracao: dur };
+      }),
     };
   }
 
