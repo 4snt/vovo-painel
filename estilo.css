@@ -1,0 +1,85 @@
+:root {
+  --fundo: #f6f4ef;
+  --cartao: #ffffff;
+  --texto: #2b2a27;
+  --sutil: #77736a;
+  --borda: #e7e2d8;
+  --destaque: #2f6f5e;
+  --destaque-claro: #dcebe5;
+  --alerta: #b4442f;
+  --alerta-claro: #f8e1dc;
+  --aviso: #b07a16;
+  --h1: #c9503b; --h2: #e3925a; --h3: #e9cf6d; --h4: #8cc49b; --h5: #3f9365;
+  --vazio: #ece8df;
+  --linha: #2f6f5e;
+  --linha2: #d0805a;
+  --grade: #ece8df;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #171816; --cartao: #212320; --texto: #ecebe6; --sutil: #a19e95; --borda: #33362f;
+    --destaque: #6cc3a6; --destaque-claro: #20352e; --alerta: #ef8a74; --alerta-claro: #3b2420; --aviso: #e2b25a;
+    --vazio: #2c2f2a; --linha: #6cc3a6; --linha2: #ef9f78; --grade: #2c2f2a;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--fundo); color: var(--texto);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.topo {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  max-width: 1080px; margin: 0 auto; padding: 24px 16px 8px;
+}
+h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.01em; }
+h2 { margin: 0; font-size: 1.1rem; }
+h3 { margin: 18px 0 6px; font-size: 0.95rem; color: var(--sutil); font-weight: 600; }
+.sutil { color: var(--sutil); font-size: 0.9rem; margin: 0; }
+main { max-width: 1080px; margin: 0 auto; padding: 8px 16px 40px; }
+.cartao {
+  background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px;
+  padding: 18px; margin-top: 16px;
+}
+.cab { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.senha { max-width: 420px; margin: 40px auto; }
+.senha form { display: grid; gap: 12px; margin-top: 16px; }
+input[type=password] {
+  font: inherit; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--borda);
+  background: var(--fundo); color: var(--texto);
+}
+.lembrar { font-size: 0.9rem; color: var(--sutil); display: flex; gap: 8px; align-items: center; }
+.botao, .botao-sec {
+  font: inherit; font-weight: 600; border-radius: 10px; padding: 12px 16px; cursor: pointer; border: 1px solid transparent;
+}
+.botao { background: var(--destaque); color: #fff; }
+.botao-sec { background: transparent; color: var(--sutil); border-color: var(--borda); padding: 8px 14px; }
+.erro { color: var(--alerta); margin: 0; }
+
+.resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px; padding: 14px 16px; }
+.kpi .rotulo { color: var(--sutil); font-size: 0.85rem; }
+.kpi .valor { font-size: 1.7rem; font-weight: 700; line-height: 1.2; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.kpi .det { color: var(--sutil); font-size: 0.8rem; }
+.kpi.ruim .valor { color: var(--alerta); }
+.kpi.bom .valor { color: var(--destaque); }
+
+.mapa { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, auto); grid-auto-columns: minmax(14px, 30px); gap: 4px; overflow-x: auto; padding-bottom: 4px; justify-content: start; }
+.mapa .cel { width: 100%; aspect-ratio: 1; border-radius: 4px; background: var(--vazio); }
+.mapa .rot { font-size: 0.7rem; color: var(--sutil); display: flex; align-items: center; min-width: 28px; }
+.legenda { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; font-size: 0.8rem; color: var(--sutil); }
+.legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.legenda i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+.grafico svg { width: 100%; height: auto; display: block; }
+.grafico .vazio { color: var(--sutil); font-size: 0.9rem; padding: 12px 0; }
+.lista { list-style: none; margin: 0; padding: 0; }
+.lista li { padding: 8px 0; border-top: 1px solid var(--borda); display: flex; gap: 10px; justify-content: space-between; }
+.lista li:first-child { border-top: 0; }
+.lista .quando { color: var(--sutil); font-size: 0.85rem; white-space: nowrap; }
+.lista .urgente { color: var(--alerta); font-weight: 600; }
+.duas { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.duas .cartao { margin-top: 16px; }
+@media (max-width: 720px) { .duas { grid-template-columns: 1fr; gap: 0; } }
+.rodape { margin-top: 24px; text-align: center; }
+.selo { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: var(--destaque-claro); color: var(--destaque); }
+.selo.alerta { background: var(--alerta-claro); color: var(--alerta); }

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel da Vó</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header class="topo">
+  <div>
+    <h1>Painel da Vó</h1>
+    <p id="atualizado" class="sutil">Saúde, remédios, água e humor</p>
+  </div>
+  <button id="sair" class="botao-sec" hidden>Sair</button>
+</header>
+
+<main>
+  <section id="tela-senha" class="cartao senha">
+    <h2>Acesso da família</h2>
+    <p class="sutil">Os dados são criptografados. Digite a senha do painel para abrir.</p>
+    <form id="form-senha">
+      <input id="senha" type="password" autocomplete="current-password" placeholder="Senha do painel" required>
+      <label class="lembrar"><input id="lembrar" type="checkbox"> Lembrar neste aparelho</label>
+      <button type="submit" class="botao">Abrir painel</button>
+      <p id="erro" class="erro" hidden></p>
+    </form>
+  </section>
+
+  <div id="painel" hidden>
+    <section class="resumo" id="resumo"></section>
+
+    <section class="cartao">
+      <div class="cab"><h2>Mapa de humor</h2><span class="sutil">últimas 12 semanas</span></div>
+      <div id="mapa-humor" class="mapa"></div>
+      <div class="legenda" id="legenda-humor"></div>
+    </section>
+
+    <section class="cartao">
+      <div class="cab"><h2>Remédios</h2><span class="sutil">horários registrados por dia (30 dias)</span></div>
+      <div id="graf-remedios" class="grafico"></div>
+      <h3>Horários mais esquecidos</h3>
+      <ul id="esquecidos" class="lista"></ul>
+    </section>
+
+    <section class="cartao">
+      <div class="cab"><h2>Água</h2><span class="sutil">copos por dia (30 dias)</span></div>
+      <div id="graf-agua" class="grafico"></div>
+    </section>
+
+    <section class="cartao">
+      <div class="cab"><h2>Pressão</h2><span class="sutil">máxima e mínima</span></div>
+      <div id="graf-pressao" class="grafico"></div>
+    </section>
+
+    <section class="cartao">
+      <div class="cab"><h2>Glicose</h2><span class="sutil">mg/dL</span></div>
+      <div id="graf-glicose" class="grafico"></div>
+    </section>
+
+    <div class="duas">
+      <section class="cartao">
+        <div class="cab"><h2>Sono</h2><span class="sutil">últimos 14 dias</span></div>
+        <ul id="sono" class="lista"></ul>
+      </section>
+      <section class="cartao">
+        <div class="cab"><h2>Sintomas e alertas</h2></div>
+        <ul id="sintomas" class="lista"></ul>
+      </section>
+    </div>
+
+    <section class="cartao">
+      <div class="cab"><h2>Observações</h2></div>
+      <ul id="observacoes" class="lista"></ul>
+    </section>
+
+    <p class="sutil rodape">Os dados vêm do que a vó conta para a Alexa. Isto não substitui o acompanhamento médico.</p>
+  </div>
+</main>
+
+<script src="painel.js"></script>
+</body>
+</html>
